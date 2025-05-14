@@ -1,9 +1,10 @@
 import { useState } from "react"
 import userServices from "../services/userServices"
+import { useNavigate } from "react-router-dom"
 
 export const Login = () => {
 
-
+    const navigate = useNavigate('/private')
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -20,8 +21,10 @@ export const Login = () => {
         e.preventDefault();
         //aqui disparamos servicio para registrar/logear
         userServices.login(formData).then(data=> {
-            //almacenamos en el localStorage el token de incio de sesion
-            localStorage.setItem('token', data.token)
+            if (data.success) {
+                //almacenamos en el localStorage el token de incio de sesion
+                navigate('/private')
+            }
         })
     }
 

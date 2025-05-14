@@ -1,9 +1,10 @@
 import { useState } from "react"
 import userServices from "../services/userServices"
+import { useNavigate } from "react-router-dom"
 
 export const Register = () => {
 
-
+    const navigate = useNavigate()
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -19,7 +20,7 @@ export const Register = () => {
     const handleSubmit = e => {
         e.preventDefault();
         //aqui disparamos servicio para registrar/logear
-        userServices.register(formData)
+        userServices.register(formData).then(data=> data.success && navigate('/login') )
     }
 
     return (

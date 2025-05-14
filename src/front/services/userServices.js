@@ -14,7 +14,6 @@ userServices.register = async (formData) => {
     });
     if (!resp.ok) throw Error("Something went wrong");
     const data = await resp.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.log(error);
@@ -34,6 +33,8 @@ userServices.login = async (formData) => {
     if (!resp.ok) throw Error("Something went wrong");
     const data = await resp.json();
     console.log(data);
+    localStorage.setItem('token', data.token)
+
     return data;
   } catch (error) {
     console.log(error);
@@ -54,6 +55,8 @@ userServices.getUserInfo = async () => {
     if (!resp.ok) throw Error("Something went wrong");
     const data = await resp.json();
     console.log(data);
+    //para almacenar los datos del usuario que es un OBJETO, tenemos que almacenarlos como texto en el localStorage
+    //utilizando JSON.stringify()
     localStorage.setItem('user', JSON.stringify(data.user))
     return data;
   } catch (error) {

@@ -7,6 +7,7 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from werkzeug.security import generate_password_hash, check_password_hash
 
 api = Blueprint('api', __name__)
 
@@ -43,10 +44,15 @@ def register():
         existing_user = db.session.execute(stm).scalar_one_or_none()
         if existing_user:
             return jsonify({"error": "email en uso, intenta logearte"}), 418
+        
+        #hash password
+        hashed_password = generate_password_hash(data['password'])
+
+
         #creamos un nuevo registro
         new_user = User(
             email=data['email'],
-            password=data['password'],
+            password=hashed_password,
             is_active=True
         )
         #añadimos registro nuevo a la bd
@@ -77,7 +83,7 @@ def login():
         if not user:
             return jsonify({"error": "el email no esta registrado"}), 418
         #verificamos contraseña de la bd con la que recibimos
-        if user.password != data['password']:
+        if not check_password_hash(user.password, data['password']):
             return jsonify({"error": "email/contraseña no valido"}), 418
 
        #generamos token. Tiene que ser un str porque asi lo pide la identidad, no puede ser un numero
